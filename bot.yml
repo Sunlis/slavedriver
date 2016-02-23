@@ -1,6 +1,6 @@
 name: SlaveDriver
 description: Manages PowerPlay-related progress of the Aisling Duval player group
-avatar: images/avatar.jpg
+avatar: images/avatar.png
 background: images/background.png
 config:
   - name: slacktoken

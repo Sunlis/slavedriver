@@ -1,4 +1,4 @@
-# slavedriver
+# slavedriver <img src="https://raw.githubusercontent.com/Sunlis/slavedriver/master/images/avatar.png" width="50" height="50"></img>
 Slack Bot for the ED Aisling community
 
 ## Setup

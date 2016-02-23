@@ -3,13 +3,7 @@ description: Manages PowerPlay-related progress of the Aisling Duval player grou
 avatar: images/avatar.jpg
 background: images/background.png
 config:
-  - name: OPTION
-    friendly_name: Some Unnecessary Option
-    info: This is an unnecessary option
-    default: the default value
-  - name: SECRET
-    friendly_name: Shhhh
-    info: This is an secret option
-    type: secret
-    default: not secret though
+  - name: slacktoken
+    friendly_name: API Key for Slack
+    info: Allows the bot to interact with Slack
     global: true

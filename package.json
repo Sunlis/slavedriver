@@ -1,0 +1,11 @@
+{
+  "name": "slavedriver",
+  "version": "0.0.1",
+  "description": "ED Aisling Duval player group Slack bot",
+  "dependencies": {
+    "botkit": "0.0.7"
+  },
+  "scripts": {
+    "start": "node main.js"
+  }
+}

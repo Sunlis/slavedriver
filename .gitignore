@@ -2,3 +2,6 @@
 *.sublime-workspace
 node_modules
 node_modules/*
+
+tokens.js
+drive_auth.json

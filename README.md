@@ -5,8 +5,22 @@ Slack Bot for the ED Aisling community
 
 To run locally:
 
-1. Install node.js
-2. `npm install --save botkit`
-3. Set a `slacktoken` ENV variable to the API key of a Slack bot
-4. Run `node main.js`
-5. Bug Sunlis about that thing that's breaking because of the step that he forgot to include.
+- Install node.js
+- `npm install --save botkit` to install BotKit - a ncie wrapper for Slack message interaction (+ bonus conversational magic)
+- `npm install --save googleapis` to install the official JS Google API wrapper, which is used to talk with Google Drive.
+- Create a `tokens.js` file.
+ - This is to keep any API keys out of the repo (`tokens.js` is ignored in `.gitignore`, so you can't accidentally check it in). This is for security reasons, because I don't want random Github browsers to be able to access my Slack teams and Google APIs.
+ - If you need help getting these keys, poke Sunlis.
+ - Sample tokens.js:
+
+```javascript
+var tokens = {
+	slack: '123abc'
+};
+
+module.exports = tokens;
+```
+
+- You'll also need a `.json` file for server OAuth. See https://support.google.com/cloud/answer/6158849?hl=en#serviceaccounts
+- Run `node main.js`
+- Bug Sunlis about that thing that's breaking because of the step that he forgot to include.

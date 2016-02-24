@@ -3,6 +3,6 @@
 FROM node:4-onbuild
 MAINTAINER Sean Dohring, seandohring@gmail.com
 
-RUN npm install --save botkit
+RUN npm install --save botkit && npm install --save googleapis
 
 EXPOSE 8080

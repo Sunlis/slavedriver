@@ -6,8 +6,10 @@ Slack Bot for the ED Aisling community
 To run locally:
 
 - Install node.js
-- `npm install --save botkit` to install BotKit - a ncie wrapper for Slack message interaction (+ bonus conversational magic)
+- `npm install --save botkit` to install BotKit - a ncie wrapper for Slack message interaction (+ bonus conversational magic).
 - `npm install --save googleapis` to install the official JS Google API wrapper, which is used to talk with Google Drive.
+- `npm install --save google-spreadsheets` to install a Nods.JS library that can read Google Sheets data.
+- `npm install --save winston, winston-google-spreadsheet` to install a logging library that can write to Sheets.
 - Create a `tokens.js` file.
  - This is to keep any API keys out of the repo (`tokens.js` is ignored in `.gitignore`, so you can't accidentally check it in). This is for security reasons, because I don't want random Github browsers to be able to access my Slack teams and Google APIs.
  - If you need help getting these keys, poke Sunlis.

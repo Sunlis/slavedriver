@@ -1,5 +1,7 @@
 var Botkit = require('botkit');
 var google = require('googleapis');
+var GoogleSpreadsheets = require('google-spreadsheets');
+var Sheets = require('edit-google-spreadsheet');
 
 var tokens = require('./tokens');
 var utils = require('./utils');
@@ -26,15 +28,9 @@ var jwtClient = new google.auth.JWT(
 
 jwtClient.authorize(function(err, tokens) {
   if (err) {
-    console.log(err);
-    return;
+    console.log('Unable to authenticate with Google', err);
+    process.exit(1);
   }
-
-  // Make an authorized request to list Drive files.
-  drive.files.list({ auth: jwtClient }, function(err, resp) {
-    console.log('err', err);
-    console.log('resp', resp);
-  });
 });
 
 
@@ -101,11 +97,37 @@ var ALL_TYPES = [
 ];
 
 controller.hears(
-    ['drive'],
+    ['!drivelist'],
     ALL_TYPES,
     function(bot, message) {
-        console.log(drive.files.list(driveOptions));
+      say(bot, message, 'Listing files...');
+      listFiles().then(function(resp) {
+        say(bot, message, JSON.stringify(resp));
+      });
     });
+
+controller.hears(
+  ['!actions (.*)'],
+  ALL_TYPES,
+  function(bot, message) {
+    var cycle = 'Cycle ' + message.match[1];
+    say(bot, message, 'Loading action log...');
+    Sheets.load({
+      oauth2: key,
+      spreadsheetName: 'Action Log',
+      worksheetName: cycle,
+    }, function(err, sheet) {
+      console.log(err);
+      console.log(sheet);
+    });
+    // fetchActionLog(message.match[1]).then(function(rows) {
+    //   for (var i in rows) {
+    //     var row = rows[i];
+    //     console.log(row);
+    //     say(bot, message, row.content);
+    //   }
+    // });
+  });
 
 controller.on('channel_joined', function(bot, message) {
     utils.natural(bot, message.channel.id)
@@ -115,3 +137,78 @@ controller.on('channel_joined', function(bot, message) {
         .say('Hello there!')
         .say('Thanks for having me.');
 });
+
+function say(bot, message, text) {
+  return bot.say({
+    text: text,
+    channel: message.channel
+  });
+}
+
+function listFiles() {
+  var promise = new Promise(function(resolve, reject){
+    drive.files.list({ auth: jwtClient }, function(err, resp) {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        resolve(resp);
+      }
+    });
+  });
+  return promise;
+}
+
+function getFileId(name) {
+  return listFiles().then(function(resp) {
+    for (var i in resp.files) {
+      if (resp.files[i].name == name) {
+        return resp.files[i].id;
+      }
+    }
+  });
+}
+
+function getFile(id) {
+  var promise = new Promise(function(resolve, reject) {
+    drive.files.get({ auth: jwtClient, fileId: id }, function(err, resp) {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        resolve(resp);
+      }
+    });
+  });
+  return promise;
+}
+
+function fetchActionLog(cycle) {
+  var promise = new Promise(function(resolve, reject) {
+    getFileId('Action Log').then(function(id) {
+      getFile(id).then(function(resp) {
+        GoogleSpreadsheets({ auth: jwtClient, key: resp.id }, function(err, spread) {
+          var sheet;
+          if (cycle && cycle != '') {
+            for (var i in spread.worksheets) {
+              if (spread.worksheets[i].title == 'Cycle ' + cycle) {
+                sheet = spread.worksheets[i];
+              }
+            }
+          } else {
+            sheet = spread.worksheets[spread.worksheets.length - 1];
+          }
+          sheet.rows({start: 0}, function(err, rows) {
+            if (err) {
+              console.err(err);
+              reject(err);
+            } else {
+              resolve(rows);
+            }
+          });
+        });
+      });
+    });
+  });
+  return promise;
+}

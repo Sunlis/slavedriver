@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "ED Aisling Duval player group Slack bot",
   "dependencies": {
+    "async": "^2.0.0-rc.3",
     "botkit": "0.0.7",
+    "google-spreadsheet": "^2.0.1",
     "googleapis": "^2.1.7"
   },
   "scripts": {

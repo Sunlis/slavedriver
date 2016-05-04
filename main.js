@@ -3,6 +3,7 @@ var google = require('googleapis');
 
 var tokens = require('./tokens');
 var utils = require('./utils');
+var actionLog = require('./action_log');
 
 if (!tokens) {
     tokens = {
@@ -13,30 +14,6 @@ if (!tokens.slack) {
     console.log('Must supply a Slack token');
     process.exit(1);
 }
-
-var drive = google.drive('v3');
-
-var key = require('./drive_auth.json');
-var jwtClient = new google.auth.JWT(
-    key.client_email,
-    null,
-    key.private_key,
-    ['https://www.googleapis.com/auth/drive'],
-    null);
-
-jwtClient.authorize(function(err, tokens) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-
-  // Make an authorized request to list Drive files.
-  drive.files.list({ auth: jwtClient }, function(err, resp) {
-    console.log('err', err);
-    console.log('resp', resp);
-  });
-});
-
 
 var controller = Botkit.slackbot();
 var bot = controller.spawn({
@@ -101,11 +78,23 @@ var ALL_TYPES = [
 ];
 
 controller.hears(
-    ['drive'],
+    ['actions ([0-9]+)'],
     ALL_TYPES,
     function(bot, message) {
-        console.log(drive.files.list(driveOptions));
+        actionLog.getActions(parseInt(message.match[1], 10)).then(function(actions) {
+            for (var i = 0; i < actions.length; i++) {
+                bot.reply(message, actions[i].prettyPrint());
+            }
+        }, function(err) {
+            bot.reply(message, 'Something went wrong. Show this to someone who cares:');
+            bot.reply(message, err.toString());
+        });
     });
+
+// TODO(sunlis): log command - to enter actions into the log
+// TODO(sunlis): update command - to update the prep/fort/undermine status of a system
+// TODO(sunlis): check command - to check the prep/fort/undermine status of a system
+
 
 controller.on('channel_joined', function(bot, message) {
     utils.natural(bot, message.channel.id)

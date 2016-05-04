@@ -15,7 +15,6 @@ To run locally:
 3. Create a `tokens.js` file.
  - This file will contain the API key for Slack (you'll get one in the next step).
  - Sample `tokens.js`:
-
     ```javascript
     var tokens = {
         slack: '123abc'
@@ -24,6 +23,7 @@ To run locally:
     module.exports = tokens;
     ```
 
+ - You'll fill that token with a real API token in a few steps.
 4. Make a Slack team for yourself - [https://slack.com/create](https://slack.com/create)
 5. Create a bot for that Slack team - [https://my.slack.com/services/new/bot](https://my.slack.com/services/new/bot)
  - You'll get an API token. Paste that into your `tokens.js` as your slack token.
